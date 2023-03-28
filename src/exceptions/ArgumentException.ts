@@ -1,4 +1,5 @@
-export class ArgumentException {
+import { Exception } from "./Exception";
+export class ArgumentException implements Exception{
     private _message : string;
     constructor(message? : string){
         if(!message){
