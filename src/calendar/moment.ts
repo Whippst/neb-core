@@ -51,10 +51,10 @@ export interface PeriodDescriptor{
 
 export class Period{
     private _from : Date | Instant 
-    private _to : Date | Instant | undefined
+    private _to? : Date | Instant
     private _descriptor? : PeriodDescriptor
     constructor(    from : Date | Instant, 
-                    to : Date | Instant | undefined,
+                    to? : Date | Instant,
                     descriptor? : PeriodDescriptor
                 ){
         
