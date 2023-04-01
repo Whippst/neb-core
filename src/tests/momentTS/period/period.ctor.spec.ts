@@ -1,4 +1,4 @@
-import {Instant, InstantDescriptor, Period, PeriodDescriptor} from 'calendar/moment'
+import {Instant, InstantDescriptor, Period} from 'calendar/moment'
 import { startOfToday, addDays } from 'date-fns'
 import { ArgumentException } from 'exceptions/ArgumentException';
 
@@ -54,14 +54,14 @@ describe("Tests for ctor : fixed", () =>{
         let to2 = new Instant(endDate, new fromDescriptor());
         let from2 = new Instant(startDate, new toDescriptor());
 
-        expect(() => new Period(startDate, to)).toThrow(ArgumentException);
-        expect(() => new Period(from, endDate)).toThrow( ArgumentException);
-        expect(() => new Period(from2, to2)).toThrow(ArgumentException);
+        expect(() => new Period(startDate, to)).toThrow(new ArgumentException("to and From must be of the same type"));
+        expect(() => new Period(from, endDate)).toThrow(new ArgumentException("to and From must be of the same type"));
+        expect(() => new Period(from2, to2)).toThrow(new ArgumentException("to and From must be of the same type"));
     })
     test("GIVEN to before from WHEN ctor THEN throws", ()=>{
         let to = new Instant(startDate);
         let from = new Instant(endDate);
-        expect(() => new Period(from, to)).toThrow(ArgumentException);
-        expect(() => new Period(endDate, startDate)).toThrow(ArgumentException);
+        expect(() => new Period(from, to)).toThrow(new ArgumentException("to cannot be before from"));
+        expect(() => new Period(endDate, startDate)).toThrow(new ArgumentException("to cannot be before from"));
     })
 })
