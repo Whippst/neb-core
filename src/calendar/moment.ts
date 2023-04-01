@@ -14,7 +14,7 @@ export class Instant {
         this._descriptor = desciptor;
     }
 
-    private _resolveDate() : Date | Instant {
+    private _resolveDate() : Date | Instant {   
         if(this._when instanceof Date)
             return this._when as Date
         else    
@@ -36,7 +36,7 @@ export class Instant {
         return formatISO(this.date);
     }
 
-    typeName() : string{
+    get typeName() : string{
         if(this._descriptor){
             return this._descriptor.typeString();
         }
@@ -57,6 +57,9 @@ export class Period{
                     to? : Date | Instant,
                     descriptor? : PeriodDescriptor
                 ){
+        
+                    if(!this._validateTypeEquality(from, to))
+            throw new ArgumentException("to and From must be of the same type")
         
         let f : Date
         let t: Date | undefined
@@ -102,7 +105,7 @@ export class Period{
         return this._to.date;
     }
 
-    isWithin(when : Date | Instant) : boolean{
+    contains(when : Date | Instant) : boolean{
         let w : Date
         if (when instanceof Date){
             w = when
@@ -133,7 +136,7 @@ export class Period{
         return false;
     }
 
-    intersects(period : Period) : boolean{
+    overlaps(period : Period) : boolean{
         let from1 = this.fromDate;
         let from2 = period.fromDate;
         let to1 = this.toDate;
@@ -163,7 +166,7 @@ export class Period{
 
         return false;
     }
-    toString() : string{
+    toString() : string {
         if(this._descriptor){
             return this._descriptor.toString();
         }
@@ -172,11 +175,27 @@ export class Period{
             return `from ${this.fromDate} to ${this.toDate}`
         return `from ${this.fromDate}`
     }
-    typeName(): string{
+    get typeName(): string{
         if(this._descriptor){
             return this._descriptor.typeString();
         }
         return 'Period'
+    }
+    private _validateTypeEquality(t1 : Date | Instant, t2? : Date | Instant){
+        if(!t2) return true;
+        if((t1 instanceof Date && t2 instanceof Instant) 
+                ||
+            t1 instanceof Instant && t2 instanceof Date
+        ) {
+            return false;
+        }
+        if(t1 instanceof Instant){
+            let t1type = t1.typeName;
+            let t2Type = (t2 as Instant).typeName;
+            if(t1type !== t2Type) 
+            return false;
+        }
+        return true;
     }
 }
 
@@ -196,17 +215,8 @@ export class Moment{
         if(parent ){
             if(parent.type !== MomentType.Duration)
                 throw new ArgumentException("parent moment must be a period");
-            let testPeriod = parent.when as Period;
-            if(this._type == MomentType.TimeStamp){
-                if(!testPeriod.isWithin(when as Date | Instant)){
-                    throw new ArgumentException("Moment must be within parent period")
-                }
-            }
-            else{
-                if(!testPeriod.encloses(when as Period)){
-                    throw new ArgumentException("Moment must be enclosed within Parnt")
-                }
-            }
+            if(!this.isWithin(parent))
+                throw new ArgumentException("must be within range of parent")
         }
     }
 
@@ -228,13 +238,13 @@ export class Moment{
         return this.when.toString();
     }
 
-    typeName() : string {
+    get typeName() : string {
         if(this.when instanceof Date){
             return 'Date'
         }
-        return this.when.typeName();
+        return this.when.typeName;
     }
-    startsAt() : Date{
+    get startsAt() : Date{
         if(this.when instanceof Date)
             return this.when;
         if(this.when instanceof Instant){
@@ -242,20 +252,58 @@ export class Moment{
         } 
         return this.when.fromDate;
     }
-    endsAt() : Date | undefined{
+    get endsAt() : Date | undefined{
         if(this.type == MomentType.Duration)
-            return this.startsAt();
-        let period = this.when as Period;
-        return period.toDate;
+            return (this._when as Period).toDate;
+        if(this._when instanceof Date){
+            return this._when as Date
+        }
+        if(this._when instanceof Instant)
+            return this._when.date 
     }
     before(test : Moment) : boolean{
-        var date = this.endsAt();
+        let date = this.endsAt;
         if(!date) return false;
-        return date < test.startsAt();
+        return date < test.startsAt;
     }
     after(test : Moment) : boolean{
-        var date = test.endsAt();
+        let date = test.endsAt;
         if(!date) return false;   
-        return date < this.startsAt();
+        return date < this.startsAt;
     }   
+    equals(test : Moment) : boolean{
+        if(test.type != this.type) return false
+        if(this.type == MomentType.TimeStamp)
+        {
+            return test.startsAt == this.startsAt
+        }
+        return test.startsAt == this.startsAt && test.endsAt == this.endsAt
+    }
+    isWithin(test : Moment) : boolean{
+        // a period can never be within a date or instant
+        if(this.type == MomentType.Duration && test.type == MomentType.TimeStamp)
+            return false;
+        if(this.type == MomentType.TimeStamp && test.type == MomentType.TimeStamp){
+            return test.equals(this)
+        }
+        let thisPeriod = this.type === MomentType.Duration ? this._when as Period :
+            new Period(this.startsAt, this.endsAt)
+        let testPeriod = test.when as Period;
+        return testPeriod.encloses(thisPeriod);
+    }
+    overlaps(test : Moment) : boolean{
+        if(test.type === MomentType.TimeStamp && this.type === MomentType.TimeStamp)
+            return this.equals(test);
+        if(test.type === MomentType.TimeStamp){
+            let thisPeriod = this.when as Period;
+            return thisPeriod.contains(test.startsAt);
+        }
+        if(this.type === MomentType.TimeStamp){
+            let testPeriod = test.when as Period;
+            return testPeriod.contains(this.startsAt);
+        }
+        let thisPeriod = this.when as Period;
+        let testPeriod = test.when as Period;
+        return thisPeriod.overlaps(testPeriod);
+    }
 }
