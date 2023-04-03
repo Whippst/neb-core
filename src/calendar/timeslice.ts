@@ -77,8 +77,8 @@ export class TimeSlice{
         else{
             selection = new Moment(selection);
         }
-        
-        if (selection.before(this._momentList[0]) || selection.after(this._momentList[this.length-1]))
+
+        if (selection.before(this.first) || selection.after(this.last))
             return undefined;    
 
         return this._momentList.find(m => m.overlaps(selection as Moment))
