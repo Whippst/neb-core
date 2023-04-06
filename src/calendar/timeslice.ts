@@ -83,4 +83,12 @@ export class TimeSlice{
 
         return this._momentList.find(m => m.overlaps(selection as Moment))
     }
+
+    getCorrespondingRange(selection : Period | Moment ) : Array<Moment> {
+        if(selection instanceof Period){
+            selection = new Moment(selection);
+        }
+
+        return this._momentList.filter(x => x.overlaps(selection as Moment));
+    }
 }
