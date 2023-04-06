@@ -306,4 +306,7 @@ export class Moment{
         let testPeriod = test.when as Period;
         return thisPeriod.overlaps(testPeriod);
     }
+    get isOpenEnded() : boolean{
+        return this.endsAt == undefined;
+    }
 }
