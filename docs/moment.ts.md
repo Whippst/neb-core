@@ -1,8 +1,8 @@
-+ date and range abstraction module.
+# date and range abstraction module.
 
-++ Moment Class
+## Moment Class
 
 
-++ Period Class
+## Period Class
 
-++ Instant Class
+## Instant Class
