@@ -33,6 +33,9 @@ moment provides the basic operators to compare moments in time independant of th
     provides a reference to the Moments Parent if it has ne
 ### typeName : string 
     provides the typename of the Period/instant or "Date"
+### isOpenEnded : boolean
+    true if Moment is duration and when.to equals undefined else false
+
 ## Period Class
 A period represents a time span between from and to, where to can be undefined and thus the period can stretch for an indefinite period. 
 
