@@ -88,9 +88,6 @@ export class TimeSlice{
         if(selection instanceof Period){
             selection = new Moment(selection);
         }
-        else if (selection.type == MomentType.TimeStamp){
-            selection = new Moment(new Period(selection.startsAt))
-        }
 
         return this._momentList.filter(x => x.overlaps(selection as Moment));
     }
