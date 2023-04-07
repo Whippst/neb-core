@@ -1,3 +1,3 @@
-# neb-core
+# Nebula COre (neb-core)
 
-[reference](./docs/nebula_core.md)
+For detailed library reference click [here](./docs/nebula_core.md)
