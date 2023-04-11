@@ -26,7 +26,7 @@ export interface IPeriod{
 }
 
 export enum MomentType{
-    TimeStamp = 1, Duration     
+    TimeStamp = 1, Duration, Empty    
 }
 
 export interface IMoment {
@@ -342,5 +342,52 @@ export class Moment{
     }
     get isOpenEnded() : boolean{
         return this.endsAt == undefined;
+    }
+}
+
+export class EmptyMoment{
+
+    get when() : null {
+        return null;
+    }   
+
+    get type() : MomentType{
+        return MomentType.Empty
+    }
+
+    get parent() : IMoment | undefined {
+        return undefined
+    }
+    toString() : string {
+        return ""
+    }
+
+    get typeName() : string {
+        return "Empty"
+    }
+    get startsAt() : null{
+        return null
+    }
+    get endsAt() : null{
+        return null;
+    }
+    before(test : IMoment) : boolean{
+        return false
+    }
+    after(test : IMoment) : boolean{
+        return false
+    }   
+    equals(test : IMoment) : boolean{
+        return false
+    }
+    isWithin(test : IMoment) : boolean{
+        // a period can never be within a date or instant
+        return false
+    }
+    overlaps(test : IMoment) : boolean{
+        return false
+    }
+    get isOpenEnded() : boolean{
+        return false;
     }
 }

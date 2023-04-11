@@ -1,5 +1,5 @@
 import { ArgumentException } from "exceptions/ArgumentException";
-import { IMoment, Moment, IPeriod, IInstant, MomentType } from "./moment"
+import { IMoment, EmptyMoment, Moment, IPeriod, IInstant, MomentType } from "./moment"
 import { isEqual, addDays } from "date-fns";
 
 export interface ITimeSlice{
@@ -8,7 +8,7 @@ export interface ITimeSlice{
     get first() : IMoment;
     get last() : IMoment;
     getCorresponding(selection : Date | IMoment | IInstant) : IMoment | undefined;
-    getCorrespondingRange(selection : IPeriod | IMoment ) : ITimeSlice
+    getCorrespondingRange(selection : IPeriod | IMoment ) : ITimeSlice | EmptySlice;
 }
 
 
@@ -93,12 +93,15 @@ export class TimeSlice{
         return this._momentList.find(m => m.overlaps(selection as Moment))
     }
 
-    getCorrespondingRange(selection : IPeriod | IMoment ) : ITimeSlice {
+    getCorrespondingRange(selection : IPeriod | IMoment ) : ITimeSlice | EmptySlice {
         if("to" in selection){
             selection = new Moment(selection);
         }
-
-        return new CorrespondingRange(this._momentList.filter(x => x.overlaps(selection as IMoment)));
+        let range = this._momentList.filter(x => x.overlaps(selection as IMoment));
+        if(range.length == 0)
+            return new EmptySlice();
+        return new CorrespondingRange(range);
+        
     }
 }
 
@@ -139,11 +142,39 @@ class CorrespondingRange {
         return this._momentList.find(m => m.overlaps(selection as Moment))
     }
 
-    getCorrespondingRange(selection : IPeriod | IMoment ) : ITimeSlice {
+    getCorrespondingRange(selection : IPeriod | IMoment ) : ITimeSlice | EmptySlice  {
         if("to" in selection){
             selection = new Moment(selection);
         }
+        let range = this._momentList.filter(x => x.overlaps(selection as IMoment));
+        if(range.length == 0)
+            return new EmptySlice();
+        return new CorrespondingRange(range);
+    }
+}
 
-        return new CorrespondingRange(this._momentList.filter(x => x.overlaps(selection as IMoment)));
+export class EmptySlice{
+    get length () : number{
+        return 0;
+    }
+
+    get(index : number) : IMoment{
+        throw new RangeError("Slice is empty")
+    }
+
+    get first() : EmptyMoment{
+        return new EmptyMoment()
+    }
+
+    get last() :  EmptyMoment{
+        return new EmptyMoment();
+    }
+
+    getCorresponding(selection : Date | IMoment | IInstant) : IMoment | undefined | EmptyMoment{
+        return new EmptyMoment();
+    }
+
+    getCorrespondingRange(selection : IPeriod | IMoment ) : ITimeSlice | EmptySlice {
+        return new EmptySlice();
     }
 }
