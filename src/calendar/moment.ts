@@ -1,15 +1,57 @@
 import { ArgumentException } from "../exceptions/ArgumentException";
 import {formatISO } from 'date-fns'
 
-export interface InstantDescriptor{
+export interface IDescriptor{
     toString() : string;
     typeString() : string;
 } 
 
+export interface IInstant{
+    get value() : Date | IInstant;
+    get date() : Date;
+    toString() : string;
+    get typeName() : string;
+}
+
+export interface IPeriod{
+    get from() : Date | IInstant;
+    get to() : Date | IInstant | undefined;
+    get fromDate() : Date;
+    get toDate() : Date | undefined;
+    contains(when : Date | IInstant) : boolean;
+    overlaps(period : IPeriod) : boolean;
+    encloses(period : IPeriod) : boolean;
+    toString() : string ;
+    get typeName(): string;
+}
+
+export enum MomentType{
+    TimeStamp = 1, Duration     
+}
+
+export interface IMoment {
+    get when() : Date | IInstant | IPeriod 
+    get type() : MomentType
+    get parent() : IMoment | undefined
+    toString() : string
+    get typeName() : string
+    get startsAt() : Date
+    get endsAt() : Date | undefined;
+    before(test : IMoment) : boolean
+    after(test : IMoment) : boolean;
+    equals(test : IMoment) : boolean;
+    isWithin(test : IMoment) : boolean;
+    overlaps(test : IMoment) : boolean;
+    get isOpenEnded() : boolean;
+}
+
+
+// Inbuilt Implementations
+
 export class Instant {
-    private _when : Date | Instant
-    private _descriptor? : InstantDescriptor
-    constructor(when : Date | Instant, desciptor? : InstantDescriptor){
+    private _when : Date | IInstant
+    private _descriptor? : IDescriptor
+    constructor(when : Date | IInstant, desciptor? : IDescriptor){
         this._when = when;
         this._descriptor = desciptor;
     }
@@ -18,12 +60,12 @@ export class Instant {
         if(this._when instanceof Date)
             return this._when as Date
         else    
-            return this._when._resolveDate();
+            return this._when.date;
     }
 
-    get value(){
+    get value() : Date | IInstant{
         return this._when;
-    }
+    } 
 
     get date() : Date{
         return this._resolveDate() as Date;
@@ -44,18 +86,15 @@ export class Instant {
     }
 }
 
-export interface PeriodDescriptor{
-    toString() : string;
-    typeString() : string;
-}
+
 
 export class Period{
-    private _from : Date | Instant 
-    private _to? : Date | Instant
-    private _descriptor? : PeriodDescriptor
-    constructor(    from : Date | Instant, 
-                    to? : Date | Instant,
-                    descriptor? : PeriodDescriptor
+    private _from : Date | IInstant 
+    private _to? : Date | IInstant
+    private _descriptor? : IDescriptor
+    constructor(    from : Date | IInstant, 
+                    to? : Date | IInstant,
+                    descriptor? : IDescriptor
                 ){
         
                     if(!this._validateTypeEquality(from, to))
@@ -84,10 +123,10 @@ export class Period{
         this._descriptor = descriptor;
     }
 
-    get from() : Date | Instant{
+    get from() : Date | IInstant{
         return this._from;
     }
-    get to() : Date | Instant | undefined{
+    get to() : Date | IInstant | undefined{
         return this._to;
     }
 
@@ -105,7 +144,7 @@ export class Period{
         return this._to.date;
     }
 
-    contains(when : Date | Instant) : boolean{
+    contains(when : Date | IInstant) : boolean{
         let w : Date
         if (when instanceof Date){
             w = when
@@ -136,7 +175,7 @@ export class Period{
         return false;
     }
 
-    overlaps(period : Period) : boolean{
+    overlaps(period : IPeriod) : boolean{
         let from1 = this.fromDate;
         let from2 = period.fromDate;
         let to1 = this.toDate;
@@ -152,7 +191,7 @@ export class Period{
             return true;
         return false;
     }
-    encloses(period : Period) : boolean{
+    encloses(period : IPeriod) : boolean{
         let from1 = this.fromDate;
         let from2 = period.fromDate;
         let to1 = this.toDate;
@@ -181,7 +220,7 @@ export class Period{
         }
         return 'Period'
     }
-    private _validateTypeEquality(t1 : Date | Instant, t2? : Date | Instant){
+    private _validateTypeEquality(t1 : Date | IInstant, t2? : Date | IInstant){
         if(!t2) return true;
         if((t1 instanceof Date && t2 instanceof Instant) 
                 ||
@@ -199,16 +238,13 @@ export class Period{
     }
 }
 
-export enum MomentType{
-    TimeStamp = 1, Duration     
-}
 
 export class Moment{
-    private _when : Date | Instant | Period 
+    private _when : Date | IInstant | IPeriod 
     private _type : MomentType
     private _parent? : Moment
 
-    constructor(when : Date | Instant | Period, parent? : Moment){
+    constructor(when : Date | IInstant | IPeriod, parent? : Moment){
         this._when = when;
         this._type =  when instanceof Period ? MomentType.Duration : MomentType.TimeStamp; 
         this._parent = parent;
@@ -220,7 +256,7 @@ export class Moment{
         }
     }
 
-    get when() : Date | Instant | Period {
+    get when() : Date | IInstant | IPeriod {
         return this._when;
     }   
 
@@ -228,7 +264,7 @@ export class Moment{
         return this._type;
     }
 
-    get parent() : Moment | undefined {
+    get parent() : IMoment | undefined {
         return this._parent;
     }
     toString() : string {
@@ -245,33 +281,31 @@ export class Moment{
         return this.when.typeName;
     }
     get startsAt() : Date{
-        if(this.when instanceof Date)
-            return this.when;
-        if(this.when instanceof Instant){
+        if("date" in this.when){
             return this.when.date;
         } 
-        return this.when.fromDate;
+        if("fromDate" in this.when)
+            return this.when.fromDate;    
+        return this.when;
     }
     get endsAt() : Date | undefined{
         if(this.type == MomentType.Duration)
-            return (this._when as Period).toDate;
-        if(this._when instanceof Date){
-            return this._when as Date
-        }
-        if(this._when instanceof Instant)
-            return this._when.date 
+            return (this._when as IPeriod).toDate;
+        if("date" in this._when)
+            return this._when.date;
+        return this._when as Date;
     }
-    before(test : Moment) : boolean{
+    before(test : IMoment) : boolean{
         let date = this.endsAt;
         if(!date) return false;
         return date < test.startsAt;
     }
-    after(test : Moment) : boolean{
+    after(test : IMoment) : boolean{
         let date = test.endsAt;
         if(!date) return false;   
         return date < this.startsAt;
     }   
-    equals(test : Moment) : boolean{
+    equals(test : IMoment) : boolean{
         if(test.type != this.type) return false
         if(this.type == MomentType.TimeStamp)
         {
@@ -279,7 +313,7 @@ export class Moment{
         }
         return test.startsAt == this.startsAt && test.endsAt == this.endsAt
     }
-    isWithin(test : Moment) : boolean{
+    isWithin(test : IMoment) : boolean{
         // a period can never be within a date or instant
         if(this.type == MomentType.Duration && test.type == MomentType.TimeStamp)
             return false;
@@ -291,7 +325,7 @@ export class Moment{
         let testPeriod = test.when as Period;
         return testPeriod.encloses(thisPeriod);
     }
-    overlaps(test : Moment) : boolean{
+    overlaps(test : IMoment) : boolean{
         if(test.type === MomentType.TimeStamp && this.type === MomentType.TimeStamp)
             return this.equals(test);
         if(test.type === MomentType.TimeStamp){

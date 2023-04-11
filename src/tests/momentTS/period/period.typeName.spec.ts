@@ -1,4 +1,4 @@
-import { Period, PeriodDescriptor} from 'calendar/moment'
+import { Period, IDescriptor} from 'calendar/moment'
 import { startOfToday, addDays } from 'date-fns'
 
 const startDate = startOfToday();
@@ -8,7 +8,7 @@ describe("tests for typeName", () =>{
         expect(new Period(startDate).typeName).toBe('Period');
     })
     test("GIVEN a period with descriptor WHEN typeName THEN returns descriptor string", () =>{
-        class TestPeriodDescriptor implements PeriodDescriptor
+        class TestPeriodDescriptor 
         {
             toString(): string {
                 return "test string"
