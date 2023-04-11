@@ -93,6 +93,52 @@ export class TimeSlice{
         return this._momentList.find(m => m.overlaps(selection as Moment))
     }
 
+    getCorrespondingRange(selection : IPeriod | Moment ) : ITimeSlice {
+        if("to" in selection){
+            selection = new Moment(selection);
+        }
+
+        return new CorrespondingRange(this._momentList.filter(x => x.overlaps(selection as IMoment)));
+    }
+}
+
+class CorrespondingRange {
+    private _momentList : Array<IMoment>;
+    constructor(list : Array<IMoment>){
+        this._momentList = list;
+    }
+    get length () : number{
+        return this._momentList.length;
+    }
+
+    get(index : number) : IMoment{
+        if(index < 0 || index > this.length -1)
+            throw new RangeError();
+        return this._momentList[index];
+    }
+
+    get first() : IMoment{
+        return this._momentList[0];
+    }
+
+    get last() : IMoment{
+        return this._momentList[this.length-1]
+    }
+
+    getCorresponding(selection : Date | IMoment | IInstant) : IMoment | undefined{
+
+        if("startsAt" in selection)
+            selection.type == MomentType.Duration ? selection = new Moment(selection.startsAt) : selection;
+        else{
+            selection = new Moment(selection);
+        }
+
+        if (selection.before(this.first) || selection.after(this.last))
+            return undefined;    
+
+        return this._momentList.find(m => m.overlaps(selection as Moment))
+    }
+
     getCorrespondingRange(selection : IPeriod | Moment ) : Array<IMoment> {
         if("to" in selection){
             selection = new Moment(selection);
