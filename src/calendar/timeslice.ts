@@ -2,7 +2,7 @@ import { ArgumentException } from "exceptions/ArgumentException";
 import { IMoment, Moment, IPeriod, IInstant, MomentType } from "./moment"
 import { isEqual, addDays } from "date-fns";
 
-export interface ITimeSplice{
+export interface ITimeSlice{
     get length () : number;
     get(index : number) : IMoment;
     get first() : IMoment;
