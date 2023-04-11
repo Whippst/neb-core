@@ -13,9 +13,9 @@ describe("tests for get corresponding range", () =>{
         let resultRange = slice.getCorrespondingRange(testPeriod);
 
         expect(resultRange.length).toBe(3);
-        expect(resultRange[0].startsAt).toEqual(startDate);
-        expect(resultRange[1].startsAt).toEqual(addDays(startDate, 8));
-        expect(resultRange[2].startsAt).toEqual(addDays(startDate, 15));
+        expect(resultRange.get(0).startsAt).toEqual(startDate);
+        expect(resultRange.get(1).startsAt).toEqual(addDays(startDate, 8));
+        expect(resultRange.get(2).startsAt).toEqual(addDays(startDate, 15));
     })
 
     test("GIVEN a duration within timeslice WHEN getCorrespondingRange THEN returns overlapping moments", ()=>{
@@ -25,9 +25,9 @@ describe("tests for get corresponding range", () =>{
         let resultRange = slice.getCorrespondingRange(testMoment);
 
         expect(resultRange.length).toBe(3);
-        expect(resultRange[0].startsAt).toEqual(startDate);
-        expect(resultRange[1].startsAt).toEqual(addDays(startDate, 8));
-        expect(resultRange[2].startsAt).toEqual(addDays(startDate, 15));
+        expect(resultRange.get(0).startsAt).toEqual(startDate);
+        expect(resultRange.get(1).startsAt).toEqual(addDays(startDate, 8));
+        expect(resultRange.get(2).startsAt).toEqual(addDays(startDate, 15));
     })
 
     test("GIVEN a timestamp within timeslice WHEN getCorrespondingRange THEN returns overlapping moments", ()=>{
@@ -37,7 +37,7 @@ describe("tests for get corresponding range", () =>{
         let resultRange = slice.getCorrespondingRange(testMoment);
 
         expect(resultRange.length).toBe(1);
-        expect(resultRange[0].startsAt).toEqual(addDays(startDate, 8));
+        expect(resultRange.get(0).startsAt).toEqual(addDays(startDate, 8));
     })
 
     test("GIVEN a period overlapping at start WHEN getCorrespondingRange THEN returns overlapping moments", ()=>{
@@ -47,9 +47,9 @@ describe("tests for get corresponding range", () =>{
         let resultRange = slice.getCorrespondingRange(testPeriod);
 
         expect(resultRange.length).toBe(3);
-        expect(resultRange[0].startsAt).toEqual(startDate);
-        expect(resultRange[1].startsAt).toEqual(addDays(startDate, 8));
-        expect(resultRange[2].startsAt).toEqual(addDays(startDate, 15));
+        expect(resultRange.get(0).startsAt).toEqual(startDate);
+        expect(resultRange.get(1).startsAt).toEqual(addDays(startDate, 8));
+        expect(resultRange.get(2).startsAt).toEqual(addDays(startDate, 15));
     })
 
     test("GIVEN a duration overlapping at start WHEN getCorrespondingRange THEN returns overlapping moments", ()=>{
@@ -59,9 +59,9 @@ describe("tests for get corresponding range", () =>{
         let resultRange = slice.getCorrespondingRange(testPeriod);
 
         expect(resultRange.length).toBe(3);
-        expect(resultRange[0].startsAt).toEqual(startDate);
-        expect(resultRange[1].startsAt).toEqual(addDays(startDate, 8));
-        expect(resultRange[2].startsAt).toEqual(addDays(startDate, 15));
+        expect(resultRange.get(0).startsAt).toEqual(startDate);
+        expect(resultRange.get(1).startsAt).toEqual(addDays(startDate, 8));
+        expect(resultRange.get(2).startsAt).toEqual(addDays(startDate, 15));
     })
 
     test("GIVEN a period that overlaps end WHEN getCorrespondingRange THEN returns overlapping moments", () =>{
@@ -71,7 +71,7 @@ describe("tests for get corresponding range", () =>{
         let resultRange = slice.getCorrespondingRange(testPeriod);
 
         expect(resultRange.length).toBe(1);
-        expect(resultRange[0].startsAt).toEqual(addDays(startDate, 22));
+        expect(resultRange.get(0).startsAt).toEqual(addDays(startDate, 22));
     })
 
     test("GIVEN a duration that overlaps end WHEN getCorrespondingRange THEN returns overlapping moments", () =>{
@@ -81,7 +81,7 @@ describe("tests for get corresponding range", () =>{
         let resultRange = slice.getCorrespondingRange(testMoment);
 
         expect(resultRange.length).toBe(1);
-        expect(resultRange[0].startsAt).toEqual(addDays(startDate, 22));
+        expect(resultRange.get(0).startsAt).toEqual(addDays(startDate, 22));
     })
     test("GIVEN a timestamp that overlaps end WHEN getCorrespondingRange THEN returns overlapping moments", () =>{
         let slice =  createSampleMonthTimeSlice();
@@ -90,7 +90,7 @@ describe("tests for get corresponding range", () =>{
         let resultRange = slice.getCorrespondingRange(testMoment);
 
         expect(resultRange.length).toBe(1);
-        expect(resultRange[0].startsAt).toEqual(addDays(startDate, 22));
+        expect(resultRange.get(0).startsAt).toEqual(addDays(startDate, 22));
     })
 
     test("GIVEN a period before close WHEN getCorrespondingRange THEN returns empty list",() =>{
