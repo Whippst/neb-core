@@ -8,7 +8,7 @@ export interface ITimeSlice{
     get first() : IMoment;
     get last() : IMoment;
     getCorresponding(selection : Date | IMoment | IInstant) : IMoment | undefined;
-    getCorrespondingRange(selection : IPeriod | Moment ) : ITimeSlice
+    getCorrespondingRange(selection : IPeriod | IMoment ) : ITimeSlice
 }
 
 
@@ -93,7 +93,7 @@ export class TimeSlice{
         return this._momentList.find(m => m.overlaps(selection as Moment))
     }
 
-    getCorrespondingRange(selection : IPeriod | Moment ) : ITimeSlice {
+    getCorrespondingRange(selection : IPeriod | IMoment ) : ITimeSlice {
         if("to" in selection){
             selection = new Moment(selection);
         }
@@ -139,7 +139,7 @@ class CorrespondingRange {
         return this._momentList.find(m => m.overlaps(selection as Moment))
     }
 
-    getCorrespondingRange(selection : IPeriod | Moment ) : ITimeSlice {
+    getCorrespondingRange(selection : IPeriod | IMoment ) : ITimeSlice {
         if("to" in selection){
             selection = new Moment(selection);
         }
