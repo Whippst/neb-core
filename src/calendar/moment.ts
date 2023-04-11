@@ -26,7 +26,7 @@ export interface IPeriod{
 }
 
 export enum MomentType{
-    TimeStamp = 1, Duration     
+    TimeStamp = 1, Duration, Empty    
 }
 
 export interface IMoment {
