@@ -1,4 +1,4 @@
-import {Instant, Period, PeriodDescriptor} from 'calendar/moment'
+import {Instant, Period, IDescriptor} from 'calendar/moment'
 import { startOfToday, addDays } from 'date-fns'
 
 const startDate = startOfToday();
@@ -25,7 +25,7 @@ describe("tests for toString", () => {
     })
 
     test("GIVEN a period with a descriptor WHEN toString THEN returns descriptor string ", () => {
-        class TestPeriodDescriptor implements PeriodDescriptor
+        class TestPeriodDescriptor
         {
             toString(): string {
                 return "test string"

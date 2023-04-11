@@ -1,4 +1,4 @@
-import {Instant, InstantDescriptor, Period} from 'calendar/moment'
+import {Instant, IDescriptor, Period} from 'calendar/moment'
 import { startOfToday, addDays } from 'date-fns'
 import { ArgumentException } from 'exceptions/ArgumentException';
 
@@ -39,11 +39,11 @@ describe("Tests for ctor : fixed", () =>{
         expect((period.to as Instant).date).toBe(endDate);
     })
     test("GIVEN different types WHEN ctor THEN Throws", () =>{
-        class fromDescriptor implements InstantDescriptor{
+        class fromDescriptor {
             toString() : string  { return "some string"}  ;
             typeString(): string { return "type 1"};
         }
-        class toDescriptor implements InstantDescriptor{
+        class toDescriptor {
             toString() : string  { return "other string"}  ;
             typeString(): string { return "type 2"};
         }

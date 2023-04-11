@@ -1,5 +1,5 @@
-import { InstantDescriptor } from 'calendar/moment';
-import { PeriodDescriptor } from 'calendar/moment';
+import { IDescriptor } from 'calendar/moment';
+
 import {Moment, Period, Instant} from 'calendar/moment'
 import { startOfToday, addDays, formatISO } from 'date-fns'
 
@@ -11,7 +11,7 @@ describe("tests for typeName", () => {
       expect(momentToTest.typeName).toBe("Date");
     })
     test("GIVEN an Instant or a Period WHEN typeName then return when.typeName", () =>{
-      class TestInstantDescriptor implements InstantDescriptor{
+      class TestInstantDescriptor {
         private _value : Date
         constructor(date : Date){
           this._value = date;
@@ -24,7 +24,7 @@ describe("tests for typeName", () => {
         }
       };
       
-      class TestPeriodDescriptor implements PeriodDescriptor{
+      class TestPeriodDescriptor {
         private _from : Date;
         private _to : Date;
         constructor(from : Date, to : Date ){

@@ -1,5 +1,4 @@
-import { InstantDescriptor } from 'calendar/moment';
-import { PeriodDescriptor } from 'calendar/moment';
+import { IDescriptor } from 'calendar/moment';
 import {Moment, Period, Instant} from 'calendar/moment'
 import { startOfToday, addDays, formatISO } from 'date-fns'
 
@@ -15,7 +14,7 @@ describe("tests for toString", () => {
 
     test("GIVEN an Instant or Period WHEN toString THEN returns the representation by descriptor", () =>{
       
-      class TestInstantDescriptor implements InstantDescriptor{
+      class TestInstantDescriptor {
         private _value : Date
         constructor(date : Date){
           this._value = date;
@@ -28,7 +27,7 @@ describe("tests for toString", () => {
         }
       };
       
-      class TestPeriodDescriptor implements PeriodDescriptor{
+      class TestPeriodDescriptor {
         private _from : Date;
         private _to : Date;
         constructor(from : Date, to : Date ){

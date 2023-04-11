@@ -1,28 +1,37 @@
 import { ArgumentException } from "exceptions/ArgumentException";
-import { Moment, Period, Instant, MomentType } from "./moment"
+import { IMoment, Moment, IPeriod, IInstant, MomentType } from "./moment"
 import { isEqual, addDays } from "date-fns";
+
+export interface ITimeSplice{
+    get length () : number;
+    get(index : number) : IMoment;
+    get first() : IMoment;
+    get last() : IMoment;
+    getCorresponding(selection : Date | IMoment | IInstant) : IMoment | undefined;
+    getCorrespondingRange(selection : IPeriod | Moment ) : Array<IMoment>
+}
 
 
 export class TimeSlice{
-    private _momentList : Array<Moment>;
-    private _parent : Moment;
-    constructor(momentList : Array<Moment>){
+    private _momentList : Array<IMoment>;
+    private _parent : IMoment;
+    constructor(momentList : Array<IMoment>){
         if(momentList.length == 0) 
             throw new ArgumentException("Moment list cannot be empty.")
         this._validateParent(momentList)
 
-        this._momentList = new Array<Moment>();
+        this._momentList = new Array<IMoment>();
         momentList.forEach(m => this._momentList.push(m));
         this._momentList.sort((m1, m2) => {
             if (m1.before(m2)) return -1;
             if ((m2.before(m1))) return 1;
             return 0;
         })
-        this._parent = this._momentList[0].parent as Moment;
+        this._parent = momentList[0].parent as IMoment;
         this._validateRange();
     }
 
-    private _validateParent(list : Array<Moment>){
+    private _validateParent(list : Array<IMoment>){
         let commonParent = list[0].parent;
         if(!commonParent)
             throw new ArgumentException("Moments must have a common parent.")
@@ -56,24 +65,24 @@ export class TimeSlice{
         return this._momentList.length;
     }
 
-    get(index : number) : Moment{
+    get(index : number) : IMoment{
         if(index < 0 || index > this.length -1)
             throw new RangeError();
         return this._momentList[index];
     }
 
-    get first() : Moment{
+    get first() : IMoment{
         return this._momentList[0];
     }
 
-    get last() : Moment{
+    get last() : IMoment{
         return this._momentList[this.length-1]
     }
 
-    getCorresponding(selection : Date | Moment | Instant) : Moment | undefined{
+    getCorresponding(selection : Date | IMoment | IInstant) : IMoment | undefined{
 
-        if(selection instanceof Moment)
-            selection.type == MomentType.Duration ?selection = new Moment(selection.startsAt) : selection;
+        if("startsAt" in selection)
+            selection.type == MomentType.Duration ? selection = new Moment(selection.startsAt) : selection;
         else{
             selection = new Moment(selection);
         }
@@ -84,11 +93,11 @@ export class TimeSlice{
         return this._momentList.find(m => m.overlaps(selection as Moment))
     }
 
-    getCorrespondingRange(selection : Period | Moment ) : Array<Moment> {
-        if(selection instanceof Period){
+    getCorrespondingRange(selection : IPeriod | Moment ) : Array<IMoment> {
+        if("to" in selection){
             selection = new Moment(selection);
         }
 
-        return this._momentList.filter(x => x.overlaps(selection as Moment));
+        return this._momentList.filter(x => x.overlaps(selection as IMoment));
     }
 }
