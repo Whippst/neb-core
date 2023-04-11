@@ -1,4 +1,4 @@
-[Back to Calendar Home](../calendar.md)
+[Back to Calendar Home](./calendar.md)
 
 # Date and Range Abstraction Module.
 
@@ -7,6 +7,6 @@ This module contains the classes necessary to abstract times and durations into 
 ---
 **Contents**
 
-* [Moment](./moment.md)
-* [Period](./period.md)
-* [Instant](./instant.md)
+* [Moment](moment/moment.md)
+* [Period](period/period.md)
+* [Instant](instant/instant.md)
