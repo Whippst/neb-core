@@ -1,7 +1,6 @@
-[back to class](./moment.md)
+[back to interface](./moment.md)
 
 # Methods
-[ctor](./moment_ctor.md)
 
 [before](./moment_before.md)
 
