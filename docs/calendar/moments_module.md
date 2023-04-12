@@ -7,6 +7,6 @@ This module contains the classes necessary to abstract times and durations into 
 ---
 **Contents**
 
-* [Moment](moment/moment.md)
+* [Moment](moment/moment_interface.md)
 * [Period](period/period.md)
-* [Instant](instant/instant.md)
+* [Instant](instant/instant_interface.md)
