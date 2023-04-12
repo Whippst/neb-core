@@ -1,3 +1,5 @@
-[back to class](./instant.md)
+[back to interface](./instant.md)
 
 # Methods
+
+[toString](./instant_toString.md)

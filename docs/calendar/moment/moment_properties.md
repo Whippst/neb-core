@@ -1,4 +1,4 @@
-[back to class](./moment.md)
+[back to interface](./moment.md)
 
 # Properties
 
@@ -9,13 +9,13 @@
 > the latest date of the Instant/Period/Date reference by when if the period is open ended then this will be undefined. 
 > if an Instant or Date it will be equal to startsAt  
 
-**when** : *Date | instant | Period* 
+**when** : *Date | IInstant | IPeriod* 
 > the When provided in the ctor. 
 
 **type** : *MomentType*
 > if when is Period then MomentType.Duration otherwise MomentType.Timestamp
 
-**parent** : *Moment | undefined*
+**parent** : *IMoment | undefined*
 > provides a reference to the Moments Parent if it has one
 
 **typeName** : *string* 

@@ -7,3 +7,5 @@ Classes and functions for supporting the Calendar configuration and use within N
 [Moment](./moments_module.md)
 
 [TimeSlice](./timeslice.md)
+
+For implementation details click [here](design_docs.md).

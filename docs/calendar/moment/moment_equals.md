@@ -4,7 +4,7 @@
 
 **params** : 
 
-**test** : Moment
+**test** : IMoment
 > the moment to test against this moment 
 **return type** : 
 > boolean
