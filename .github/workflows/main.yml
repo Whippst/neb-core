@@ -26,7 +26,7 @@ jobs:
 
       # Install required deps for action
       - name: Install Dependencies
-        run: |  
+        run: |
               cd lib 
               npm install
 
