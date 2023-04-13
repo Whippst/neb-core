@@ -1,0 +1,33 @@
+{
+  "name": "docs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --p .",
+    "clean": "rimraf dist",
+    "compile": "cross-env-shell babel src -d dist --source-maps --extensions '.ts'",
+    "start": "npm run clean && npm run compile && node ./dist/index.js",
+    "start-typecheck": "npm run typecheck && npm run start"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/cli": "^7.21.0",
+    "@babel/core": "^7.21.4",
+    "@babel/preset-env": "^7.21.4",
+    "@babel/preset-typescript": "^7.21.4",
+    "cross-env": "^7.0.3",
+    "fs-extra": "^11.1.1",
+    "highlight.js": "^11.7.0",
+    "markdown-it": "^13.0.1",
+    "rimraf": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.1",
+    "@types/markdown-it": "^12.2.3",
+    "@types/node": "^18.15.11",
+    "typescript": "^5.0.4"
+  }
+}

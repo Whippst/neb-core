@@ -1,0 +1,47 @@
+{
+  "name": "neb-core",
+  "version": "1.0.0",
+  "description": "Core Typescript Libraries for Nebula",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tsc",
+    "pub": " npx tsc && jest && node js/index.js",
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q js/index.js\"",
+    "test": "jest ",
+    "clean": "rmdir /s/q js && mkdir js",
+    "typecheck_md": "tsc --p .",
+    "clean_md": "rimraf man",
+    "compile_md": "cross-env-shell babel docs -d man --source-maps --extensions '.ts'",
+    "start_md": "npm run clean && npm run compile && node ./man/index.js",
+    "start-typecheck_md": "npm run typecheck && npm run start"
+  },
+  "keywords": [
+    "nebula",
+    "typescript"
+  ],
+  "author": "Stephen Whipp",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/cli": "^7.21.0",
+    "@babel/core": "^7.21.4",
+    "@babel/preset-env": "^7.21.4",
+    "@babel/preset-typescript": "^7.21.4",
+    "concurrently": "^7.6.0",
+    "cross-env": "^7.0.3",
+    "date-fns": "^2.29.3",
+    "fs-extra": "^11.1.1",
+    "highlight.js": "^11.7.0",
+    "markdown-it": "^13.0.1",
+    "nodemon": "^2.0.22",
+    "rimraf": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.1",
+    "@types/jest": "^29.5.0",
+    "@types/markdown-it": "^12.2.3",
+    "@types/node": "^18.15.11",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.0.5",
+    "typescript": "^5.0.4"
+  }
+}
