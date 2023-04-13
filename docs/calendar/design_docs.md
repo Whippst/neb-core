@@ -5,3 +5,5 @@
 [Instant](./instant/instant_design.md)
 
 [Moment](./moment/moment_design.md)
+
+[Period](./period/period_design.md)
