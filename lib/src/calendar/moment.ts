@@ -222,15 +222,15 @@ export class Period{
     }
     private _validateTypeEquality(t1 : Date | IInstant, t2? : Date | IInstant){
         if(!t2) return true;
-        if((t1 instanceof Date && t2 instanceof Instant) 
+        if((t1 instanceof Date && "value" in t2) 
                 ||
-            t1 instanceof Instant && t2 instanceof Date
+            "value" in t1 && t2 instanceof Date
         ) {
             return false;
         }
-        if(t1 instanceof Instant){
+        if("value" in t1){
             let t1type = t1.typeName;
-            let t2Type = (t2 as Instant).typeName;
+            let t2Type = (t2 as IInstant).typeName;
             if(t1type !== t2Type) 
             return false;
         }
@@ -246,7 +246,7 @@ export class Moment{
 
     constructor(when : Date | IInstant | IPeriod, parent? : Moment){
         this._when = when;
-        this._type =  when instanceof Period ? MomentType.Duration : MomentType.TimeStamp; 
+        this._type =  "toDate" in when ? MomentType.Duration : MomentType.TimeStamp; 
         this._parent = parent;
         if(parent ){
             if(parent.type !== MomentType.Duration)
@@ -320,24 +320,26 @@ export class Moment{
         if(this.type == MomentType.TimeStamp && test.type == MomentType.TimeStamp){
             return test.equals(this)
         }
-        let thisPeriod = this.type === MomentType.Duration ? this._when as Period :
-            new Period(this.startsAt, this.endsAt)
-        let testPeriod = test.when as Period;
+        // todo: thisPeriod wants refactoring to use an IPeriod factory in future rather than explicit ctor
+        let thisPeriod = this.type === MomentType.Duration ? this._when as IPeriod :
+            new Period(this.startsAt, this.endsAt) 
+
+        let testPeriod = test.when as IPeriod;
         return testPeriod.encloses(thisPeriod);
     }
     overlaps(test : IMoment) : boolean{
         if(test.type === MomentType.TimeStamp && this.type === MomentType.TimeStamp)
             return this.equals(test);
         if(test.type === MomentType.TimeStamp){
-            let thisPeriod = this.when as Period;
+            let thisPeriod = this.when as IPeriod;
             return thisPeriod.contains(test.startsAt);
         }
         if(this.type === MomentType.TimeStamp){
-            let testPeriod = test.when as Period;
+            let testPeriod = test.when as IPeriod;
             return testPeriod.contains(this.startsAt);
         }
-        let thisPeriod = this.when as Period;
-        let testPeriod = test.when as Period;
+        let thisPeriod = this.when as IPeriod;
+        let testPeriod = test.when as IPeriod;
         return thisPeriod.overlaps(testPeriod);
     }
     get isOpenEnded() : boolean{
