@@ -103,5 +103,17 @@ describe("tests for ctor", () =>{
         expect(() => new TimeSlice(momentList)).not.toThrow(new ArgumentException("All of parent range must be filled."));
     })
 
+    test("GIVEN a moment list out of order WHEN ctor THEN sorts", ()=>{
+        let parent = new Moment(new Period(startDate));
+        let momentList = [
+            new Moment(new Period(addDays(startDate, 8), addDays(startDate, 14)), parent),
+            new Moment(new Period(startDate, addDays(startDate, 7)), parent),
+            new Moment(new Period(addDays(startDate, 22)), parent),
+            new Moment(new Period(addDays(startDate, 15), addDays(startDate, 21)), parent),
+        ]
+        let slice = new TimeSlice(momentList);
+        expect(slice.first.startsAt).toEqual(startDate);
+        expect(slice.last.startsAt).toEqual(addDays(startDate, 22));
+    })
 
 })
